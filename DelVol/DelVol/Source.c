@@ -35,11 +35,10 @@ int wmain(int argc, WCHAR * argv[])
 	if (drivesOn == 0)
 	{
 		ShowError(GetLastError());
-
 	}
 	else if (drivesOn & 8)	//D drive is on! 
 	{
-		volumeLetter = L"E:\\";
+		volumeLetter = L"D:\\";
 		delVolume = DeleteVolumeMountPointW(volumeLetter);	//Let's remove the letter
 
 		if (delVolume)	//It worked!
