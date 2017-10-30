@@ -25,8 +25,7 @@ VOID ShowError(DWORD errId)
 //Main function. All magic happens here! 
 int wmain(int argc, WCHAR * argv[])
 {
-	DWORD drivesOn;
-	BOOL delVolume;
+	DWORD drivesOn;	
 	LPCWSTR volumeLetter=NULL;
 
 	//GetVolumeNameForVolumeMountPoint
