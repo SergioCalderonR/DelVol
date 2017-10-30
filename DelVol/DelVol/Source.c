@@ -18,7 +18,7 @@ VOID ShowError(DWORD errId)
 
 	}
 
-	wprintf(L"\n%s", errMsg);
+	wprintf(L"%s", errMsg);
 	LocalFree(errMsg);
 }
 
@@ -29,6 +29,17 @@ int wmain(int argc, WCHAR * argv[])
 	BOOL delVolume;
 	LPCWSTR volumeLetter=NULL;
 
+	//GetVolumeNameForVolumeMountPoint
+	BOOL getVolume;
+	LPCWSTR oldDriveLetter = L"D:\\";
+	WCHAR volumeGUID[50];
+	DWORD guidSize = 50;
+
+	//SetVolumeMountPoint
+	BOOL setVolume;
+	LPCWSTR newDriveLetter = L"Q:\\";
+
+
 	//Get all available logical drives
 	drivesOn = GetLogicalDrives();
 
@@ -38,22 +49,52 @@ int wmain(int argc, WCHAR * argv[])
 	}
 	else if (drivesOn & 8)	//D drive is on! 
 	{
-		volumeLetter = L"D:\\";
-		delVolume = DeleteVolumeMountPointW(volumeLetter);	//Let's remove the letter
+		/*	We know the D is busy, so me need to
+			get its volume GUID path, delete the 
+			volume mount point and set it with another
+			letter. I will use G.	*/
 
-		if (delVolume)	//It worked!
+		//Here we get the volume GUID path
+		getVolume = GetVolumeNameForVolumeMountPointW(oldDriveLetter, volumeGUID, guidSize);
+
+		if (!getVolume)	//Function failed
 		{
-			wprintf(L"Drive letter was deleted.\n");
-		}
-		else
-		{
-			//This error message could be useful for troubleshooting
-			fwprintf(stderr, L"Drive letter wasn't deleted, error: ");
+			fwprintf(stderr, L"Could not get volume GUID path, error: ");
 			ShowError(GetLastError());
+			return FALSE;
 		}
+
+		//Now we have to release the letter by deleting
+		//the volume mount point
+
+		if (!DeleteVolumeMountPointW(oldDriveLetter))
+		{
+			fwprintf(stderr, L"Could not delete the volume mount point, error: ");
+			ShowError(GetLastError());
+			return FALSE;
+		}
+
+		//Finally, we just have to assign a new
+		//letter to the volume and mount it
+
+		setVolume = SetVolumeMountPointW(newDriveLetter, volumeGUID);
+
+		if (!setVolume)	//Function failed
+		{
+			fwprintf(stderr, L"Could not set a new volume mount point, error: ");
+			ShowError(GetLastError());
+			return FALSE;
+		}
+
+		//Let's the user know we have finish
+		wprintf(L"\nDrive letter has been successfully changed.");
 
 	}
-
+	else
+	{
+		fwprintf(stderr, L"\nThere is not available drive.\n");
+		return FALSE;
+	}
 
 	return 0;
 }
