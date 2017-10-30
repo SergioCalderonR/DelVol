@@ -1,7 +1,6 @@
 #include <Windows.h>
 #include <wchar.h>
 
-
 #pragma comment(lib, "Kernel32.lib")
 
 VOID ShowError(DWORD errId)
@@ -37,7 +36,6 @@ int wmain(int argc, WCHAR * argv[])
 	//SetVolumeMountPoint
 	BOOL setVolume;
 	LPCWSTR newDriveLetter = L"Q:\\";
-
 
 	//Get all available logical drives
 	drivesOn = GetLogicalDrives();
