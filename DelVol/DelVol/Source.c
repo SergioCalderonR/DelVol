@@ -84,7 +84,7 @@ int wmain(int argc, WCHAR * argv[])
 		}
 
 		//Let's the user know we have finish
-		wprintf(L"\nDrive letter has been successfully changed.");
+		wprintf(L"\nDrive letter has been successfully changed.\n");
 
 	}
 	else
