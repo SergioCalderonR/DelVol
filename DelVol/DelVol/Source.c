@@ -3,6 +3,30 @@
 
 #pragma comment(lib, "Kernel32.lib")
 
+LPWSTR AssignDriveLetter(DWORD logicalDrives)
+{
+	WCHAR *driveletters[22] = {
+		L"E:\\", L"F:\\", L"G:\\", L"H:\\", L"I:\\",
+		L"J:\\", L"K:\\", L"L:\\", L"M:\\", L"N:\\",
+		L"O:\\", L"P:\\", L"Q:\\", L"R:\\", L"S:\\", L"T:\\",
+		L"U:\\", L"V:\\", L"W:\\", L"X:\\", L"Y:\\", L"Z:\\" };
+
+	int i = 0;	
+
+	//Shift to letter "E:\"
+	logicalDrives >>= 4;
+
+	while (logicalDrives & 1)
+	{
+		i++;
+		logicalDrives >>= 1;
+		
+	}
+
+	return driveletters[i];
+
+}
+
 VOID ShowError(DWORD errId)
 {
 	DWORD flags = FORMAT_MESSAGE_ALLOCATE_BUFFER |
@@ -35,7 +59,7 @@ int wmain(int argc, WCHAR * argv[])
 
 	//SetVolumeMountPoint
 	BOOL setVolume;
-	LPCWSTR newDriveLetter = L"Q:\\";
+	/*LPCWSTR newDriveLetter =NULL*/;
 
 	//Get all available logical drives
 	drivesOn = GetLogicalDrives();
@@ -50,6 +74,8 @@ int wmain(int argc, WCHAR * argv[])
 			get its volume GUID path, delete the 
 			volume mount point and set it with another
 			letter. I will use G.	*/
+
+		
 
 		//Here we get the volume GUID path
 		getVolume = GetVolumeNameForVolumeMountPointW(oldDriveLetter, volumeGUID, guidSize);
@@ -74,7 +100,7 @@ int wmain(int argc, WCHAR * argv[])
 		//Finally, we just have to assign a new
 		//letter to the volume and mount it
 
-		setVolume = SetVolumeMountPointW(newDriveLetter, volumeGUID);
+		setVolume = SetVolumeMountPointW(AssignDriveLetter(drivesOn), volumeGUID);
 
 		if (!setVolume)	//Function failed
 		{
@@ -84,7 +110,8 @@ int wmain(int argc, WCHAR * argv[])
 		}
 
 		//Let's the user know we have finish
-		wprintf(L"\nDrive letter has been successfully changed.\n");
+		wprintf(L"\nDrive letter has been successfully changed.\n");	
+		
 
 	}
 	else
