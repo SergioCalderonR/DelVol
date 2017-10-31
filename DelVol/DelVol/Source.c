@@ -5,7 +5,7 @@
 
 LPWSTR AssignDriveLetter(DWORD logicalDrives)
 {
-	WCHAR *driveletters[22] = {
+	WCHAR *driveLetters[22] = {
 		L"E:\\", L"F:\\", L"G:\\", L"H:\\", L"I:\\",
 		L"J:\\", L"K:\\", L"L:\\", L"M:\\", L"N:\\",
 		L"O:\\", L"P:\\", L"Q:\\", L"R:\\", L"S:\\", L"T:\\",
@@ -23,7 +23,7 @@ LPWSTR AssignDriveLetter(DWORD logicalDrives)
 		
 	}
 
-	return driveletters[i];
+	return driveLetters[i];
 
 }
 
