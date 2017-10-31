@@ -58,8 +58,7 @@ int wmain(int argc, WCHAR * argv[])
 	DWORD guidSize = 50;
 
 	//SetVolumeMountPoint
-	BOOL setVolume;
-	/*LPCWSTR newDriveLetter =NULL*/;
+	BOOL setVolume;	
 
 	//Get all available logical drives
 	drivesOn = GetLogicalDrives();
@@ -73,16 +72,14 @@ int wmain(int argc, WCHAR * argv[])
 		/*	We know the D is busy, so me need to
 			get its volume GUID path, delete the 
 			volume mount point and set it with another
-			letter. I will use G.	*/
-
-		
+			letter. I will use G.	*/		
 
 		//Here we get the volume GUID path
 		getVolume = GetVolumeNameForVolumeMountPointW(oldDriveLetter, volumeGUID, guidSize);
 
 		if (!getVolume)	//Function failed
 		{
-			fwprintf(stderr, L"Could not get volume GUID path, error: ");
+			fwprintf(stderr, L"\nCould not get volume GUID path, error: ");
 			ShowError(GetLastError());
 			return FALSE;
 		}
@@ -92,7 +89,7 @@ int wmain(int argc, WCHAR * argv[])
 
 		if (!DeleteVolumeMountPointW(oldDriveLetter))
 		{
-			fwprintf(stderr, L"Could not delete the volume mount point, error: ");
+			fwprintf(stderr, L"\nCould not delete the volume mount point, error: ");
 			ShowError(GetLastError());
 			return FALSE;
 		}
@@ -100,18 +97,19 @@ int wmain(int argc, WCHAR * argv[])
 		//Finally, we just have to assign a new
 		//letter to the volume and mount it
 
+		//AssignDriveLetter looks for the next available letter
+
 		setVolume = SetVolumeMountPointW(AssignDriveLetter(drivesOn), volumeGUID);
 
 		if (!setVolume)	//Function failed
 		{
-			fwprintf(stderr, L"Could not set a new volume mount point, error: ");
+			fwprintf(stderr, L"\nCould not set a new volume mount point, error: ");
 			ShowError(GetLastError());
 			return FALSE;
 		}
 
 		//Let's the user know we have finish
-		wprintf(L"\nDrive letter has been successfully changed.\n");	
-		
+		wprintf(L"\nDrive letter has been successfully changed.\n");			
 
 	}
 	else
