@@ -61,58 +61,69 @@ int wmain(int argc, WCHAR * argv[])
 	//Get all available logical drives
 	drivesOn = GetLogicalDrives();
 
-	drivesOn >>= *pDriveIndex;
-
-	if (drivesOn & 1)	//Drive is on! 
+	if (drivesOn == 0)
 	{
-		/*	We know the drive is busy, so me need to
-			get its volume GUID path, delete the 
-			volume mount point and set it with another
-			letter. I will use next available letter.	*/		
-
-		//Here we get the volume GUID path
-		getVolume = GetVolumeNameForVolumeMountPointW(oldDriveLetter, volumeGUID, guidSize);
-
-		if (!getVolume)	//Function failed
-		{
-			fwprintf(stderr, L"\nCould not get volume GUID path, error: ");
-			ShowError(GetLastError());
-			return FALSE;
-		}
-
-		//Now we have to release the letter by deleting
-		//the volume mount point
-
-		if (!DeleteVolumeMountPointW(oldDriveLetter))
-		{
-			fwprintf(stderr, L"\nCould not delete the volume mount point, error: ");
-			ShowError(GetLastError());
-			return FALSE;
-		}
-
-		//Finally, we just have to assign a new
-		//letter to the volume and mount it
-
-		//AssignDriveLetter looks for the next available letter
-
-		setVolume = SetVolumeMountPointW(AssignDriveLetter(drivesOn, pDriveIndex), volumeGUID);
-
-		if (!setVolume)	//Function failed
-		{
-			fwprintf(stderr, L"\nCould not set a new volume mount point, error: ");
-			ShowError(GetLastError());
-			return FALSE;
-		}
-
-		//Let's the user know we have finish
-		wprintf(L"\nDrive letter has been successfully changed.\n");			
-
+		fwprintf(stderr, L"Could not get available drives, error: ");
+		ShowError(GetLastError());
+		return FALSE;
 	}
 	else
 	{
-		fwprintf(stderr, L"\nThere is not volume mounted with this letter.\n");
-		return FALSE;
-	}
+		//Shift to the drive passed as argument
+		/*	drivesOn >>= *pDriveIndex;*/
+
+		if (drivesOn & (1 << *pDriveIndex))	//Drive is on! 
+		{
+			/*	We know the drive is busy, so me need to
+			get its volume GUID path, delete the
+			volume mount point and set it with another
+			letter. I will use next available letter.	*/
+
+			//Here we get the volume GUID path
+			getVolume = GetVolumeNameForVolumeMountPointW(oldDriveLetter, volumeGUID, guidSize);
+
+			if (!getVolume)	//Function failed
+			{
+				fwprintf(stderr, L"\nCould not get volume GUID path, error: ");
+				ShowError(GetLastError());
+				return FALSE;
+			}
+
+			//Now we have to release the letter by deleting
+			//the volume mount point
+
+			if (!DeleteVolumeMountPointW(oldDriveLetter))
+			{
+				fwprintf(stderr, L"\nCould not delete the volume mount point, error: ");
+				ShowError(GetLastError());
+				return FALSE;
+			}
+
+			//Finally, we just have to assign a new
+			//letter to the volume and mount it
+
+			//AssignDriveLetter looks for the next available letter
+
+			setVolume = SetVolumeMountPointW(AssignDriveLetter(drivesOn), volumeGUID);
+
+			if (!setVolume)	//Function failed
+			{
+				fwprintf(stderr, L"\nCould not set a new volume mount point, error: ");
+				ShowError(GetLastError());
+				return FALSE;
+			}
+
+			//Let's the user know we have finish
+			wprintf(L"\nDrive letter has been successfully changed.\n");
+
+		}
+		else
+		{
+			fwprintf(stderr, L"\nNot volume mounted with this letter or wrong arguments.\n");
+			return FALSE;
+		}
+
+	}		
 
 	return 0;
 }

@@ -17,6 +17,8 @@ BOOL ValidateLetter(LPWSTR driveLetter)
 
 }
 
+//This function returns the letter the volume letter
+//and modify the pointer to the index
 LPWSTR GetVolumeLetter(LPWSTR letter, DWORD * pLetterIndex)
 {
 
@@ -40,22 +42,20 @@ LPWSTR GetVolumeLetter(LPWSTR letter, DWORD * pLetterIndex)
 
 }
 
-LPWSTR AssignDriveLetter(DWORD logicalDrives, DWORD * pLetterIndex)
+//This function looks for the next available drive letter
+LPWSTR AssignDriveLetter(DWORD logicalDrives)
 {
-	WCHAR *driveLetters[23] = { L"D:\\",
-		L"E:\\", L"F:\\", L"G:\\", L"H:\\", L"I:\\",
-		L"J:\\", L"K:\\", L"L:\\", L"M:\\", L"N:\\",
-		L"O:\\", L"P:\\", L"Q:\\", L"R:\\", L"S:\\", L"T:\\",
-		L"U:\\", L"V:\\", L"W:\\", L"X:\\", L"Y:\\", L"Z:\\" };
+	WCHAR *driveLetters[26] = {
+		L"A:\\", L"B:\\", L"C:\\", L"D:\\", L"E:\\", L"F:\\",
+		L"G:\\", L"H:\\", L"I:\\", L"J:\\", L"K:\\", L"L:\\",
+		L"M:\\", L"N:\\", L"O:\\", L"P:\\", L"Q:\\", L"R:\\",
+		L"S:\\", L"T:\\", L"U:\\", L"V:\\", L"W:\\", L"X:\\",
+		L"Y:\\", L"Z:\\" };
 
-	int i = 0;
+	int i = 3;
 
-	//If E:\ volume is passed, go back to D:\ to start over
-	if (*pLetterIndex == 4)
-	{
-
-		logicalDrives <<= 1;
-	}
+	//Let's start from D:\ drive letter
+	logicalDrives >>= 3;
 
 	while (logicalDrives & 1)
 	{
