@@ -124,6 +124,7 @@
     <ClCompile Include="Source.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Drives.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
