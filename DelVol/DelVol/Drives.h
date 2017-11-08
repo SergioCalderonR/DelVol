@@ -52,7 +52,8 @@ LPWSTR AssignDriveLetter(DWORD logicalDrives)
 		L"S:\\", L"T:\\", L"U:\\", L"V:\\", L"W:\\", L"X:\\",
 		L"Y:\\", L"Z:\\" };
 
-	int i = 3;
+	//We need this to assign from drive letter D
+	int i = 3;	
 
 	//Let's start from D:\ drive letter
 	logicalDrives >>= 3;
